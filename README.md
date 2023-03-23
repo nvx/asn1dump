@@ -1,22 +1,19 @@
-# dumpDER.go - dump a DER file, displaying its structure and content
+# asn1parse - dump a DER file, displaying its structure and content
 
 ## Description
-`dumpDER` is an example of using the `encoding/asn1` package to read and parse a DER file from `stdin`. It will display the DER file structure on `stdout` as well as the data it included, trying to improve the information displayed by converting the most current types (time, string, etc.) in a readable way and retrieving the name of object identifiers from the object identifier repository.
-
-## Build
-Make sure both files `dumpDER.go` and `object_name.go` are in the same empty directory, and use the `go build` command to build the `dumpDER` executable.
+`asn1parse` is an example of using the `encoding/asn1` package to read and parse a DER file from `stdin`. It will display the DER file structure on `stdout` as well as the data it included, trying to improve the information displayed by converting the most current types (time, string, etc.) in a readable way and retrieving the name of object identifiers from the object identifier repository.
 
 ## Usage
 
-Use the `dumpDER` command providing a DER file as its standard input. Example :
+Use the `asn1parse` command providing a DER file as its standard input. Example :
 
 ```
-dumpDER < file.der
+asn1parse < file.der
 ```
 I tried it with smime.p7s files, as well as cert, request and keypair files. I took my test files from [X509 certificate examples for testing and verification](http://fm4dd.com/openssl/certexamples.htm)
 
 ```
-$ ./dumpDER </512b-rsa-example-request.der
+$ ./asn1parse </512b-rsa-example-request.der
 Note: all INTEGER, OCTET STRING and BIT STRING values displayed as hexadecimal bytes
 SEQUENCE (260 bytes)                            :
 | SEQUENCE (175 bytes)                          :
@@ -62,7 +59,7 @@ SEQUENCE (260 bytes)                            :
 ## Known limitations
 
 1. The `encoding/asn1`package only implements a subset of ASN.1. Not all ASN.1 types are recognized. The list of the ASN.1 types than can be recognized by the `encoding/asn1` package are described in the [Unmarshal function documentation](https://golang.org/pkg/encoding/asn1/#Unmarshal)
-2. To retrieve the name of an ASN.1 object identifier, I am using a GET from the [OID Repository Web site](http://oid-info.com/). It's not very efficient, especially for DER file with a lot of objects, and should be optimized &#10132; this is now fixed: `dumpDER.gp` manages a map of object identifiers names. It now knows the most often used objects identifiers and their names. When a new objectif identifier is found, its name is added to the map to avoid multiple requests to oid-info.com
-3. Some objects use OCTET STRING or BIT STRING as extension for other ASN.1 data, as described [here](https://stackoverflow.com/questions/15299201/asn-1-octet-strings). These extensions are currently not parsed as ASN.1 data and only displayed as hexadecimal bytes  &#10132; as a partial fix, `dumpDER` now tries to parse OCTET STRING and BIT STRING that start like a SEQUENCE
+2. To retrieve the name of an ASN.1 object identifier, I am using a GET from the [OID Repository Web site](http://oid-info.com/). It's not very efficient, especially for DER file with a lot of objects, and should be optimized &#10132; this is now fixed: `asn1parse.gp` manages a map of object identifiers names. It now knows the most often used objects identifiers and their names. When a new objectif identifier is found, its name is added to the map to avoid multiple requests to oid-info.com
+3. Some objects use OCTET STRING or BIT STRING as extension for other ASN.1 data, as described [here](https://stackoverflow.com/questions/15299201/asn-1-octet-strings). These extensions are currently not parsed as ASN.1 data and only displayed as hexadecimal bytes  &#10132; as a partial fix, `asn1parse` now tries to parse OCTET STRING and BIT STRING that start like a SEQUENCE
 
 
